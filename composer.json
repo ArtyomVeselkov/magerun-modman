@@ -1,11 +1,15 @@
 {
-  "name": "fruitcakestudio/magerun-modman",
-  "description": "Modman Addon for Magerun",
-  "keywords": ["magerun", "modman", "magento"],
-  "homepage": "https://github.com/fruitcakestudio/magerun-modman",
+  "name": "aws/magerun-modman-absolute",
+  "description": "Modman Addon for Magerun (Absolute mod)",
+  "keywords": ["magerun", "modman", "magento", "absolute"],
   "minimum-stability": "dev",
   "license": "MIT",
   "authors": [
+    {
+      "name": "AWS",
+      "email": "info@aws3.com",
+      "role": "Developer"
+    },
     {
       "name": "Barry vd. Heuvel",
       "email": "barry@fruitcake.nl",
@@ -25,7 +29,7 @@
   },
   "autoload": {
     "psr-0": {
-      "Fruitcake": "src/"
+      "Aws": "src/"
     }
   }
 }

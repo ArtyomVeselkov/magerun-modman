@@ -1,6 +1,6 @@
 <?php
 
-namespace Fruitcake\Magerun\Modman;
+namespace Aws\Magerun\Modman\Generate;
 
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -13,13 +13,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Generate a modman file for the current directory.
  */
-class GenerateCommand extends AbstractMagentoCommand
+class AbsoluteCommand extends AbstractMagentoCommand
 {
     protected function configure()
     {
         $this
-          ->setName('modman:generate')
-          ->setDescription('Generate a modman file for the current directory.')
+          ->setName('modman:generate:absolute')
+          ->setDescription('Generate a modman file for the current directory (Absolute modification)')
           ->addOption('dir', 'd', InputOption::VALUE_OPTIONAL, 'Directory in which the module files are located.')
           ->addOption('raw', 'r', InputOption::VALUE_NONE, 'Ouput the raw paths, without rewriting to the shortest variant.')
         ;
@@ -55,7 +55,10 @@ class GenerateCommand extends AbstractMagentoCommand
                 $path = str_replace('\\', '/', $path);
             }
 
-            if ( ! $raw) {
+            if (false !== strpos($path, '/emulate/')) {
+                $path = preg_replace('#^app/code/(local|community|core|absolute)/([^\/]+)/([^\/]+)/emulate/#', '', $path);
+            }
+            if (!$raw) {
                 // Rewrite file to shortest path
                 $path = $this->rewritePath($path);
             }
@@ -77,7 +80,7 @@ class GenerateCommand extends AbstractMagentoCommand
     public function rewritePath($path)
     {
         $path = preg_replace('{^\./}', '', $path);
-        $path = preg_replace('{^app/code/(local|community|core)/((?![Mage|Zend])\w+)/(\w+)/(.*)$}', 'app/code/$1/$2/$3', $path);
+        $path = preg_replace('{^app/code/(local|community|core|absolute)/((?![Mage|Zend])\w+)/(\w+)/(.*)$}', 'app/code/$1/$2/$3', $path);
         $path = preg_replace('{^lib/((?![Mage|Zend|Varien])\w+)/(.*)$}', 'lib/$1', $path);
         $path = preg_replace('{^js/(.*?)/(.*?)/(.*)$}', 'js/$1/$2', $path);
         $path = preg_replace('{^app/design/(.*?)/(.*?)/default/layout/(.*?)/(.*)$}', 'app/design/$1/$2/default/layout/$3', $path);

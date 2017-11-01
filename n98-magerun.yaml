@@ -1,6 +1,6 @@
 autoloaders:
-  Fruitcake: %module%/src
+  Aws: %module%/src
 
 commands:
   customCommands:
-    - Fruitcake\Magerun\Modman\GenerateCommand
+    - Aws\Magerun\Modman\Generate\AbsoluteCommand

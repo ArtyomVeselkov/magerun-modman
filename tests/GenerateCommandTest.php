@@ -1,6 +1,6 @@
 <?php
 
-use Fruitcake\Magerun\Modman\GenerateCommand;
+use Aws\Magerun\Modman\GenerateCommand;
 
 class GenerateCommandTest extends PHPUnit_Framework_TestCase
 {

@@ -13,7 +13,7 @@
          stopOnFailure="false"
          stopOnIncomplete="false"
          stopOnSkipped="false"
-         strict="false">
+         >
     <testsuites>
         <testsuite name="n98-magerun Tests">
             <directory>./tests</directory>

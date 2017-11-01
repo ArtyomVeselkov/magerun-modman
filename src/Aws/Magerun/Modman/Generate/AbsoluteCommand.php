@@ -55,16 +55,18 @@ class AbsoluteCommand extends AbstractMagentoCommand
                 $path = str_replace('\\', '/', $path);
             }
 
+            $target = $path;
             if (false !== strpos($path, '/emulate/')) {
                 $path = preg_replace('#^app/code/(local|community|core|absolute)/([^\/]+)/([^\/]+)/emulate/#', '', $path);
             }
             if (!$raw) {
                 // Rewrite file to shortest path
+                $target = $this->rewritePath($target, true);
                 $path = $this->rewritePath($path);
             }
 
             // Use path as key to prevent duplicates
-            $paths[$path] = $path;
+            $paths[$target] = $path;
         }
 
         // Print paths to screen
@@ -77,15 +79,19 @@ class AbsoluteCommand extends AbstractMagentoCommand
      * app/code/community/VENDOR/PACKAGE/etc/config.xml -> app/code/community/VENDOR/PACKAGE
      * Exclude Mage/Zend/Varien code from app/code and lib
      */
-    public function rewritePath($path)
+    public function rewritePath($path, $emualteFlag = false)
     {
+        $emulatePrefix = $emualteFlag ? '{^app/code/(local|community|core|absolute)/[^\/]+/[^\/]+/emulate/' : '{^';
         $path = preg_replace('{^\./}', '', $path);
         $path = preg_replace('{^app/code/(local|community|core|absolute)/((?![Mage|Zend])\w+)/(\w+)/(.*)$}', 'app/code/$1/$2/$3', $path);
-        $path = preg_replace('{^lib/((?![Mage|Zend|Varien])\w+)/(.*)$}', 'lib/$1', $path);
-        $path = preg_replace('{^js/(.*?)/(.*?)/(.*)$}', 'js/$1/$2', $path);
-        $path = preg_replace('{^app/design/(.*?)/(.*?)/default/layout/(.*?)/(.*)$}', 'app/design/$1/$2/default/layout/$3', $path);
-        $path = preg_replace('{^app/design/(.*?)/(.*?)/default/template/(.*?)/(.*)$}', 'app/design/$1/$2/default/template/$3', $path);
-        $path = preg_replace('{^skin/(.*?)/(.*?)/default/(.*?)/(.*?)/(.*)$}', 'skin/$1/$2/default/$3/$4', $path);
+        $path = preg_replace($emulatePrefix . 'lib/((?![Mage|Zend|Varien])\w+)/(.*)$}', 'lib/$1', $path);
+        $path = preg_replace($emulatePrefix . 'js/(.*?)/(.*?)/(.*)$}', 'js/$1/$2', $path);
+        $path = preg_replace($emulatePrefix . 'app/design/(.*?)/(.*?)/default/layout/(.*?)/(.*)$}', 'app/design/$1/$2/default/layout/$3', $path);
+        $path = preg_replace($emulatePrefix . 'app/design/(.*?)/(.*?)/default/template/(.*?)/(.*)$}', 'app/design/$1/$2/default/template/$3', $path);
+        $path = preg_replace($emulatePrefix . 'skin/(.*?)/(.*?)/default/(.*?)/(.*?)/(.*)$}', 'skin/$1/$2/default/$3/$4', $path);
+        if ($emualteFlag) {
+
+        }
 
         return $path;
     }
@@ -103,9 +109,9 @@ class AbsoluteCommand extends AbstractMagentoCommand
         $prefix = $prefix ? rtrim($prefix, '/') . '/' : '';
 
         $rows = array();
-        foreach ($paths as $path) {
+        foreach ($paths as $target => $path) {
             // Add dir prefix + space suffix
-            $rows[] = array($prefix . $path . ' ', $path);
+            $rows[] = array($prefix . $target . ' ', $path);
         }
 
         // Write output in nice format
